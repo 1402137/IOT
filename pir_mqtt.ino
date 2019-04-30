@@ -14,7 +14,7 @@ const char* mqtt_server = "192.168.100.60";
 
 
 String topic = "test";
-
+int led = D3;
 int inputPin = D7;
 int lastPirValue = LOW;
 
@@ -67,8 +67,9 @@ void setup() {
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
-
+ digitalWrite(led,LOW);
   pinMode(inputPin, INPUT);
+  pinMode(led,OUTPUT);
 }
 
 void loop() {
@@ -78,16 +79,20 @@ void loop() {
   client.loop();
 
   int pirValue = digitalRead(inputPin);
+  digitalWrite(led,LOW);
   
     if (pirValue == HIGH) {
       String message = String(pirValue);
       client.publish(topic.c_str(), message.c_str());
+      digitalWrite(led,HIGH);
       delay(1000);
     }
 
     if (pirValue == LOW) {
       String message = String(pirValue);
       client.publish(topic.c_str(), message.c_str());
+      digitalWrite(led,LOW);
+      delay(1000);
     }
     Serial.println(pirValue);
     
